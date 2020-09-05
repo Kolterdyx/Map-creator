@@ -178,9 +178,9 @@ def sw():
             # Set the default box style and check style
             self.check_style = "fill"
             # Set the default side for the text
-            self.text_side = "top"
+            self.label_side = "top"
             # Set the default alignment of the text
-            self.text_align = "left"
+            self.label_align = "left"
             self.label_padding = 3
             # --------------------------
 
@@ -205,8 +205,8 @@ def sw():
             self.box.cross_width = self.cross_width
             self.box.checked = self.checked
             self.box.check_style = self.check_style
-            self.box.text_side = self.text_side
-            self.box.text_align = self.text_align
+            self.box.label_side = self.label_side
+            self.box.label_align = self.label_align
             self.box.label_padding = self.label_padding
             # --------------------------
 
@@ -255,21 +255,21 @@ def sw():
             self.opensimplex_option.check_color = (0, 0, 0)
             self.opensimplex_option.set_font_size(15)
             self.opensimplex_option.set_label("OpenSimplex noise")
-            self.opensimplex_option.text_side = "right"
+            self.opensimplex_option.label_side = "right"
             self.opensimplex_option.label_padding = 5
 
             self.perlin_noise_option = CustomCheckBox(self, x=20, y=50)
             self.perlin_noise_option.check_color = (0, 0, 0)
             self.perlin_noise_option.set_font_size(15)
             self.perlin_noise_option.set_label("Perlin noise")
-            self.perlin_noise_option.text_side = "right"
+            self.perlin_noise_option.label_side = "right"
             self.perlin_noise_option.label_padding = 5
 
             self.simplex_option = CustomCheckBox(self, x=20, y=80)
             self.simplex_option.check_color = (0, 0, 0)
             self.simplex_option.set_font_size(15)
             self.simplex_option.set_label("Simplex noise")
-            self.simplex_option.text_side = "right"
+            self.simplex_option.label_side = "right"
             self.simplex_option.label_padding = 5
 
             self.settings_file = Entry(self, x=20, y=500, border=1, size=15, width=300)
@@ -417,7 +417,7 @@ def editor():
             self.zoom_slider = Slider(self, max=200, orientation="vertical")
             self.zoom_slider.move(525, 25)
             self.zoom_slider.set_length(585)
-            self.zoom_slider.text_align = "center"
+            self.zoom_slider.label_align = "center"
             self.zoom_slider.set_font_size(15)
             self.zoom_slider.set_label("Zoom: 1")
             self.zoom_slider.set_width(15)
@@ -524,6 +524,7 @@ def editor():
                 image.append(row)
             image = np.array(image)
             image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+            print("saving image")
             cv2.imwrite(filename, image)
 
         def abort_generation(self):
@@ -555,7 +556,6 @@ def editor():
 
             for p in self.draw_processes:
                 p.start()
-                p.join()
 
         def clear(self):
             self.map.fill((100, 100, 100))

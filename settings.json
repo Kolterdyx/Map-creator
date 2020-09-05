@@ -1,1 +1,15 @@
-{"oct": 8, "scl": 300, "sea": 60, "lac": 2.3, "seed": 0, "wdh": 600, "hgt": 600, "offset": [100, 100], "mwd": 600, "mhg": 600, "zoom": 1.0, "zoom_slider": 175, "noise": 1}
+{
+	"oct": 8,
+	"scl": 300,
+	"sea": 60,
+	"lac": 2.3,
+	"seed": 0,
+	"wdh": 600,
+	"hgt": 600,
+	"offset": [100, 100],
+	"mwd": 600,
+	"mhg": 600,
+	"zoom": 1.0,
+	"zoom_slider": 175,
+	"noise": 1
+}
