@@ -162,27 +162,17 @@ def sw():
             self.parent = parent
             self.screen = parent.screen
             self.box = CheckBox(self, x=x, y=y, size=size)
-            # ------- ATTRIBUTES -------
-            # Set the default background color
+
             self.bg_color = (255, 255, 255)
-            # Set the default border width
             self.border_width = 3
-            # Set the default border color
             self.border_color = (0, 0, 0)
-            # Set the default check mark color
             self.check_color = (0, 200, 0)
-            # Set the 'cross' style check mark width
             self.cross_width = 5
-            # self.checked will be True only when the box is checked
             self.checked = False
-            # Set the default box style and check style
             self.check_style = "fill"
-            # Set the default side for the text
             self.label_side = "top"
-            # Set the default alignment of the text
             self.label_align = "left"
             self.label_padding = 3
-            # --------------------------
 
         def update(self):
             self.group = self.parent.noise_options
@@ -309,7 +299,7 @@ def sw():
                 self.apply_settings()
                 self.settings_file.set_label("Settings file:")
             else:
-                self.settings_file.set_label("Settings file:    (file not found)")
+                self.settings_file.set_label("Settings file:    No file at " + os.path.abspath(filename))
 
         def save(self):
             settings = SETTINGS.copy()
@@ -480,6 +470,11 @@ def editor():
             self.save_button.height = 25
             self.save_button.set_font_size(15)
 
+            self.save_name = Entry(self, x=380, y=570)
+            self.save_name.text = "image.png"
+            self.save_name.set_font_size(15)
+            self.save_name.set_label("Save to file:")
+
             self.widgets = [
                 self.oct_slider,
                 self.sea_level_slider,
@@ -494,7 +489,8 @@ def editor():
                 self.clear_button,
                 self.settings_button,
                 self.abort_button,
-                self.save_button
+                self.save_button,
+                self.save_name
             ]
 
             self.width_chunks = 4
@@ -513,7 +509,9 @@ def editor():
             start_settings.value = 1
 
         def save(self):
-            filename = "image.png"
+            filename = self.save_name.text
+            if filename[-4:] != ".png":
+                filename += ".png"
             surf = pg.transform.rotate(self.map, 90)
             surf = pg.transform.flip(surf, 0, 1)
             image = []
@@ -550,9 +548,16 @@ def editor():
                     height = int(SETTINGS["hgt"]/self.height_chunks)
                     pos = [x*width, y*height]
 
-                    self.draw_processes.append(Process(target=draw_colored, args=(SETTINGS["oct"], SETTINGS["scl"], SETTINGS["sea"], width,
-                                                                                  height, SETTINGS["lac"], pos, SETTINGS["seed"],
-                                                                                  SETTINGS["noise"], SETTINGS["offset"])))
+                    self.draw_processes.append(Process(target=draw_colored, args=(SETTINGS["oct"],
+                                                                                  SETTINGS["scl"],
+                                                                                  SETTINGS["sea"],
+                                                                                  width,
+                                                                                  height,
+                                                                                  SETTINGS["lac"],
+                                                                                  pos,
+                                                                                  SETTINGS["seed"],
+                                                                                  SETTINGS["noise"],
+                                                                                  SETTINGS["offset"])))
 
             for p in self.draw_processes:
                 p.start()
@@ -672,13 +677,15 @@ def editor():
             self.scale_slider.set_label("Scale: "+str(self.scale_slider.mark+1))
 
             self.zoom_slider.set_label("Zoom: "+str(self.zoom_slider.max-self.zoom_slider.mark-25))
-            self.zoom = (self.zoom_slider.max-self.zoom_slider.mark)/25
             SETTINGS["zoom_slider"] = self.zoom_slider.mark
-            if self.zoom <= 0:
+
+            zoomval = (self.zoom_slider.max-self.zoom_slider.mark)/25
+            if zoomval <= 0:
                 self.zoom = 0.025
+            else:
+                self.zoom = zoomval
 
             SETTINGS["zoom"] = self.zoom
-            # print(self.zoom)
 
             self.width_slider.set_label("Width: "+str((self.width_slider.mark)*10+100))
             SETTINGS["wdh"] = (self.width_slider.mark)*10+100
@@ -709,9 +716,10 @@ def editor():
                 if event.type == pg.MOUSEWHEEL:
                     if self.map_rect.collidepoint(pg.mouse.get_pos()):
                         try:
-                            self.zoom_slider.set_mark(self.zoom_slider.mark-event.y)
+                            m = self.zoom_slider.mark-event.y
+                            self.zoom_slider.set_mark(m)
                         except:
-                            self.zoom_slider.set_mark(0)
+                            self.zoom_slider.set_mark(200)
 
     e = Editor()
     while True:
